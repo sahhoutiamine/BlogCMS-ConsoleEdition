@@ -22,18 +22,23 @@ class User {
 
 }
 
+// Author Class 
 class Author extends User {
     public function __construct ($id, $username, $email , $pw) {
         User::__construct($id, $username, $email , $pw)
     }
 
 }
+
+// Moderator Class 
 class Moderator extends User {
     public function __construct ($id, $username, $email , $pw) {
         User::__construct($id, $username, $email , $pw)
     }
 
 }
+
+// Admin Class 
 class Admin extends Moderator {
     public function __construct ($id, $username, $email , $pw) {
         Moderator::__construct($id, $username, $email , $pw)
@@ -41,7 +46,15 @@ class Admin extends Moderator {
 
 }
 
-// category class
+// Editor Class 
+class Editor extends Moderator {
+    public function __construct ($id, $username, $email , $pw) {
+        Moderator::__construct($id, $username, $email , $pw)
+    }
+
+}
+
+// Category class
 class Category {
     private int $id;
     private string $name;
@@ -59,7 +72,7 @@ class Category {
 
 
 }
-// article class
+// Article class
 class Article {
     private int $id;
     private string $title;
@@ -87,7 +100,7 @@ class Article {
 
 
 }
-// comment class
+// Comment class
 class Comment {
     private int $id;
     private string $content;

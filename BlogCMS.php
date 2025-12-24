@@ -28,6 +28,12 @@ class Author extends User {
     }
 
 }
+class Moderator extends User {
+    public function __construct ($id, $username, $email , $pw) {
+        User::__construct($id, $username, $email , $pw)
+    }
+
+}
 
 // category class
 class Category {

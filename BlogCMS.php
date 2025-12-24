@@ -22,6 +22,13 @@ class User {
 
 }
 
+class Author extends User {
+    public function __construct ($id, $username, $email , $pw) {
+        User::__construct($id, $username, $email , $pw)
+    }
+
+}
+
 // category class
 class Category {
     private int $id;

@@ -35,8 +35,6 @@ class User {
                     return "editor";
                 } elseif ($user instanceof Author) {
                     return "author";
-                } elseif ($user instanceof Moderator) {
-                    return "moderator";
                 } else {
                     return "user";
                 }
@@ -49,8 +47,11 @@ class User {
 
 // Author Class 
 class Author extends User {
-    public function __construct(int $id, string $username, string $email, string $pw) {
+    private array $articles = []; 
+
+    public function __construct(int $id, string $username, string $email, string $pw, array $articles) {
         parent::__construct($id, $username, $email, $pw);
+        $this->articles = $articles;
     }
 }
 
@@ -94,18 +95,18 @@ class Article {
     private string $status;
     private string $createdAt;
     private string $publishedAt;
-    private int $authorId;
     private array $categories = []; 
+    private array $comments = []; 
 
-    public function __construct(int $id, string $title, string $content, string $status, string $createdAt, string $publishedAt, int $authorId, array $categories) {
+    public function __construct(int $id, string $title, string $content, string $status, string $createdAt, string $publishedAt, array $categories, array $comments) {
         $this->id = $id;
         $this->title = $title;
         $this->content = $content;
         $this->status = $status;
         $this->createdAt = $createdAt;
         $this->publishedAt = $publishedAt;
-        $this->authorId = $authorId;
         $this->categories = $categories;
+        $this->comments = $comments;
     }
 }
 

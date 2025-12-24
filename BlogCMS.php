@@ -22,6 +22,25 @@ class User {
 
 }
 
+// category class
+class Category {
+    private int $id;
+    private string $name;
+
+
+
+    public function __construct ($id, $name) {
+        this->id = $id;
+        this->name = $name;
+       
+
+    }
+
+    
+
+
+}
+// article class
 class Article {
     private int $id;
     private string $title;
@@ -35,9 +54,9 @@ class Article {
 
     public function __construct ($id, $title, $content , $status, $createdAt, $publishedAt, $authorId, $categories) {
         this->id = $id;
-        this->username = $username;
-        this->email = $email;
-        this->pw = $pw;
+        this->title = $title;
+        this->content = $content;
+        this->status = $status;
         this->createdAt = $createdAt;
         this->publishedAt = $publishedAt;
         this->authorId = $authorId;
@@ -49,6 +68,7 @@ class Article {
 
 
 }
+// comment class
 class Comment {
     private int $id;
     private string $content;

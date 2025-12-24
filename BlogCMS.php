@@ -29,17 +29,41 @@ class Article {
     private string $status;
     private string $createdAt;
     private string $publishedAt;
-    private Author $author;
+    private int $authorId;
     private Category $categories = [];
 
 
-    public function __construct ($id, $title, $content , $status, $createdAt, $publishedAt) {
+    public function __construct ($id, $title, $content , $status, $createdAt, $publishedAt, $authorId, $categories) {
         this->id = $id;
         this->username = $username;
         this->email = $email;
         this->pw = $pw;
         this->createdAt = $createdAt;
         this->publishedAt = $publishedAt;
+        this->authorId = $authorId;
+        this->categories = $categories;
+
+    }
+
+    
+
+
+}
+class Comment {
+    private int $id;
+    private string $content;
+    private string $createdAt;
+    private int $authorId;
+    private int $articleId;
+
+
+    public function __construct ($id, $content , $createdAt, $authorId, $articleId) {
+        this->id = $id;
+        this->content = $content;
+        this->createdAt = $createdAt;
+        this->authorId = $authorId;
+        this->createdAt = $createdAt;
+        this->articleId = $articleId;
     }
 
     

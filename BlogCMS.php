@@ -34,6 +34,12 @@ class Moderator extends User {
     }
 
 }
+class Admin extends Moderator {
+    public function __construct ($id, $username, $email , $pw) {
+        Moderator::__construct($id, $username, $email , $pw)
+    }
+
+}
 
 // category class
 class Category {

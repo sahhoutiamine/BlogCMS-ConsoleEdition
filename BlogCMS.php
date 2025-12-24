@@ -269,5 +269,12 @@ $comments[] = new Comment(
     3, 
     6  
 );
+$comments[] = new Comment(
+    9,
+    'I\'ve been following these sleep tips and they really don\'t work!',
+    '2024-02-27 14:50:00',
+    2, 
+    6  
+);
 
 ?>

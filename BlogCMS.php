@@ -5,13 +5,46 @@ class User {
     protected string $username;
     protected string $email;
     protected string $pw;
-
+    
     public function __construct(int $id, string $username, string $email, string $pw) {
         $this->id = $id;
         $this->username = $username;
         $this->email = $email;
         $this->pw = $pw;
     }
+    
+    public function getId(): int { 
+        return $this->id; 
+    }
+    public function getUsername(): string {
+         return $this->username; 
+    }
+    public function getEmail(): string {
+         return $this->email;
+    }
+    public function getPassword(): string { 
+        return $this->pw; 
+    }
+
+    public function login(string $email, string $pw): string {
+        foreach ($users as $user) {
+            if ($user->email === $email && $user->pw === $pw) {
+                if ($user instanceof Admin) {
+                    return "admin";
+                } elseif ($user instanceof Editor) {
+                    return "editor";
+                } elseif ($user instanceof Author) {
+                    return "author";
+                } elseif ($user instanceof Moderator) {
+                    return "moderator";
+                } else {
+                    return "user";
+                }
+            }
+        }
+        return "invalid"; 
+    }
+    
 }
 
 // Author Class 
@@ -64,8 +97,7 @@ class Article {
     private int $authorId;
     private array $categories = []; 
 
-    public function __construct(int $id, string $title, string $content, string $status, 
-                               string $createdAt, string $publishedAt, int $authorId, array $categories) {
+    public function __construct(int $id, string $title, string $content, string $status, string $createdAt, string $publishedAt, int $authorId, array $categories) {
         $this->id = $id;
         $this->title = $title;
         $this->content = $content;

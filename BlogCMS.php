@@ -60,6 +60,15 @@ class Author extends User {
     public function createArticle(Article $article): void {
         $this->articles[] = $article;
     }
+
+    public function findArticle(int $articleId): ?Article {
+    foreach ($this->articles as $article) {
+        if ($article->getId() === $articleId) {
+            return $article;
+        }
+    }
+    return null; 
+    }
 }
 
 // Moderator Class 

@@ -26,7 +26,6 @@ class User {
         return $this->pw; 
     }
 
-    // Fixed: Added static method and parameter
     public static function login(array $users, string $email, string $pw): string {
         foreach ($users as $user) {
             if ($user->getEmail() === $email && $user->getPassword() === $pw) {
@@ -58,9 +57,7 @@ class Author extends User {
         return $this->articles;
     }
     
-    public function getComments(): array {
-        return $this->comments;
-    }
+    
 }
 
 // Moderator Class 

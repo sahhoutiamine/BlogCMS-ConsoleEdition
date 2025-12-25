@@ -26,9 +26,10 @@ class User {
         return $this->pw; 
     }
 
-    public function login(string $email, string $pw): string {
+    // Fixed: Added static method and parameter
+    public static function login(array $users, string $email, string $pw): string {
         foreach ($users as $user) {
-            if ($user->email === $email && $user->pw === $pw) {
+            if ($user->getEmail() === $email && $user->getPassword() === $pw) {
                 if ($user instanceof Admin) {
                     return "admin";
                 } elseif ($user instanceof Editor) {
@@ -42,7 +43,6 @@ class User {
         }
         return "invalid"; 
     }
-    
 }
 
 // Author Class 
@@ -50,12 +50,18 @@ class Author extends User {
     private array $articles = []; 
     private array $comments = []; 
 
-
-    public function __construct(int $id, string $username, string $email, string $pw, array $articles, array $comments) {
+    public function __construct(int $id, string $username, string $email, string $pw, array $articles = [], array $comments = []) {
         parent::__construct($id, $username, $email, $pw);
         $this->articles = $articles;
         $this->comments = $comments;
-
+    }
+    
+    public function getArticles(): array {
+        return $this->articles;
+    }
+    
+    public function getComments(): array {
+        return $this->comments;
     }
 }
 
@@ -89,6 +95,14 @@ class Category {
         $this->id = $id;
         $this->name = $name;
     }
+    
+    public function getId(): int {
+        return $this->id;
+    }
+    
+    public function getName(): string {
+        return $this->name;
+    }
 }
 
 // Article class
@@ -102,7 +116,7 @@ class Article {
     private array $categories = []; 
     private array $comments = []; 
 
-    public function __construct(int $id, string $title, string $content, string $status, string $createdAt, string $publishedAt, array $categories, array $comments) {
+    public function __construct(int $id, string $title, string $content, string $status, string $createdAt, string $publishedAt = '', array $categories = [], array $comments = []) {
         $this->id = $id;
         $this->title = $title;
         $this->content = $content;
@@ -112,20 +126,48 @@ class Article {
         $this->categories = $categories;
         $this->comments = $comments;
     }
+    
+    public function getId(): int {
+        return $this->id;
+    }
+    
+    public function getTitle(): string {
+        return $this->title;
+    }
+    
+    public function getCategories(): array {
+        return $this->categories;
+    }
+    
+    public function getComments(): array {
+        return $this->comments;
+    }
 }
 
-// Comment class
+
 class Comment {
     private int $id;
     private string $content;
     private string $createdAt;
-    
+    private string $author_username; 
 
-    public function __construct(int $id, string $content, string $createdAt) {
+    public function __construct(int $id, string $content, string $createdAt, string $author_username) {
         $this->id = $id;
         $this->content = $content;
         $this->createdAt = $createdAt;
-      
+        $this->author_username = $author_username; 
+    }
+    
+    public function getId(): int {
+        return $this->id;
+    }
+    
+    public function getContent(): string {
+        return $this->content;
+    }
+    
+    public function getAuthorUsername(): string {
+        return $this->author_username;
     }
 }
 
@@ -138,11 +180,9 @@ $users = [
             new Category(2, 'Science'),
             new Category(7, 'Education')
         ], [
-            new Comment(1, 'Great article! Very informative about AI trends.', '2024-01-13 14:30:00'),
-            new Comment(2, 'Could you elaborate more on machine learning applications?', '2024-01-14 11:45:00')
+            new Comment(1, 'Great article! Very informative about AI trends.', '2024-01-13 14:30:00', 'jane_smith'),
+            new Comment(2, 'Could you elaborate more on machine learning applications?', '2024-01-14 11:45:00', 'tech_writer')
         ])
-    ], [
-        new Comment(7, 'Sleep science is fascinating. More articles on this topic please!', '2024-01-26 12:10:00')
     ]),
     
     new Author(2, 'jane_smith', 'jane@example.com', 'secure456', [
@@ -150,27 +190,22 @@ $users = [
             new Category(2, 'Science'),
             new Category(3, 'Health & Wellness')
         ], [
-            new Comment(7, 'Sleep science is fascinating. More articles on this topic please!', '2024-01-26 12:10:00'),
-            new Comment(8, 'I\'ve been following these sleep tips and they really work!', '2024-01-27 14:50:00'),
-            new Comment(9, 'I\'ve been following these sleep tips and they really don\'t work!', '2024-02-27 14:50:00')
+            new Comment(7, 'Sleep science is fascinating. More articles on this topic please!', '2024-01-26 12:10:00', 'john_doe'),
+            new Comment(8, 'I\'ve been following these sleep tips and they really work!', '2024-01-27 14:50:00', 'content_creator'),
+            new Comment(9, 'I\'ve been following these sleep tips and they really don\'t work!', '2024-02-27 14:50:00', 'tech_writer')
         ])
-    ], [
-        new Comment(2, 'Could you elaborate more on machine learning applications?', '2024-01-14 11:45:00'),
-        new Comment(9, 'I\'ve been following these sleep tips and they really don\'t work!', '2024-02-27 14:50:00')
     ]),
     
-    new Author(3, 'tech_writer', 'tech@example.com', 'techpass789', [], [
-        new Comment(8, 'I\'ve been following these sleep tips and they really work!', '2024-01-27 14:50:00')
-    ]),
+    new Author(3, 'tech_writer', 'tech@example.com', 'techpass789', []),
     
-    new Author(4, 'content_creator', 'creator@example.com', 'createpass123', [], []),
+    new Author(4, 'content_creator', 'creator@example.com', 'createpass123', []),
     new Author(5, 'blogger_max', 'max@example.com', 'blogpass456', [
         new Article(5, 'Best Travel Destinations for 2024', 'Discover the most exciting travel destinations for the coming year...', 'published', '2024-01-18 13:25:00', '2024-01-22 11:00:00', [
             new Category(8, 'Travel')
         ], [
-            new Comment(6, 'Bali is definitely on my travel list for this year!', '2024-01-23 15:25:00')
+            new Comment(6, 'Bali is definitely on my travel list for this year!', '2024-01-23 15:25:00', 'tech_writer')
         ])
-    ], []),
+    ]),
     
     new Editor(6, 'editor_mike', 'mike@example.com', 'editpass123'),
     
@@ -184,5 +219,8 @@ $users = [
     new Admin(11, 'admin_lisa', 'lisa@example.com', 'adminpass456'),
     new Admin(12, 'admin_root', 'root@example.com', 'superadmin123')
 ];
+
+$result = User::login($users, 'john@example.com', 'password123');
+echo "Login result: " . $result . "\n"; 
 
 ?>

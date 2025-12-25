@@ -57,7 +57,9 @@ class Author extends User {
         return $this->articles;
     }
     
-    
+    public function createArticle(Article $article): void {
+        $this->articles[] = $article;
+    }
 }
 
 // Moderator Class 

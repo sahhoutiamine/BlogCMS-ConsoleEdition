@@ -75,13 +75,21 @@ class Author extends User {
         if ($article !== null) {
             $article->setTitle($newTitle);
             $article->setContent($newContent);
-            echo "Article with ID {$articleId} updated successfully by author '{$this->username}'.\n";
             return true;
         }
-        
-        echo "Article with ID {$articleId} not found.\n";
         return false;
     }
+
+    public function deleteArticle(int $articleId): bool {
+    foreach ($this->articles as $index => $article) {
+        if ($article->getId() === $articleId) {
+            unset($this->articles[$index]);
+            $this->articles = array_values($this->articles);
+            return true;
+        }
+    }
+    return false;
+}
 }
 
 // Moderator Class 

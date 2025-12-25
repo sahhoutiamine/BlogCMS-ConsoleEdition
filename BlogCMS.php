@@ -48,10 +48,14 @@ class User {
 // Author Class 
 class Author extends User {
     private array $articles = []; 
+    private array $comments = []; 
 
-    public function __construct(int $id, string $username, string $email, string $pw, array $articles) {
+
+    public function __construct(int $id, string $username, string $email, string $pw, array $articles, array $comments) {
         parent::__construct($id, $username, $email, $pw);
         $this->articles = $articles;
+        $this->comments = $comments;
+
     }
 }
 
@@ -115,15 +119,13 @@ class Comment {
     private int $id;
     private string $content;
     private string $createdAt;
-    private int $authorId;
-    private int $articleId;
+    
 
-    public function __construct(int $id, string $content, string $createdAt, int $authorId, int $articleId) {
+    public function __construct(int $id, string $content, string $createdAt) {
         $this->id = $id;
         $this->content = $content;
         $this->createdAt = $createdAt;
-        $this->authorId = $authorId;
-        $this->articleId = $articleId; 
+      
     }
 }
 
@@ -131,11 +133,11 @@ class Comment {
 
 $users = [];
 
-$users[] = new Author(1, 'john_doe', 'john@example.com', 'password123');
-$users[] = new Author(2, 'jane_smith', 'jane@example.com', 'secure456');
-$users[] = new Author(3, 'tech_writer', 'tech@example.com', 'techpass789');
-$users[] = new Author(4, 'content_creator', 'creator@example.com', 'createpass123');
-$users[] = new Author(5, 'blogger_max', 'max@example.com', 'blogpass456');
+$users[] = new Author(1, 'john_doe', 'john@example.com', 'password123', []);
+$users[] = new Author(2, 'jane_smith', 'jane@example.com', 'secure456', []);
+$users[] = new Author(3, 'tech_writer', 'tech@example.com', 'techpass789', []);
+$users[] = new Author(4, 'content_creator', 'creator@example.com', 'createpass123', []);
+$users[] = new Author(5, 'blogger_max', 'max@example.com', 'blogpass456', []);
 $users[] = new Editor(6, 'editor_mike', 'mike@example.com', 'editpass123');
 $users[] = new Editor(7, 'editor_sarah', 'sarah@example.com', 'editpass456');
 $users[] = new Editor(8, 'editor_david', 'david@example.com', 'editpass789');
@@ -143,8 +145,6 @@ $users[] = new Editor(9, 'editor_emma', 'emma@example.com', 'editpass012');
 $users[] = new Admin(10, 'admin_alex', 'alex@example.com', 'adminpass123');
 $users[] = new Admin(11, 'admin_lisa', 'lisa@example.com', 'adminpass456');
 $users[] = new Admin(12, 'admin_root', 'root@example.com', 'superadmin123');
-
-
 
 $categories = [];
 
@@ -158,7 +158,6 @@ $categories[] = new Category(7, 'Education');
 $categories[] = new Category(8, 'Travel');
 $categories[] = new Category(9, 'Food & Cooking');
 
-
 function getCategoriesByIds(array $ids, array $categories): array {
     $result = [];
     foreach ($categories as $category) {
@@ -169,7 +168,6 @@ function getCategoriesByIds(array $ids, array $categories): array {
     return $result;
 }
 
-
 $articles = [];
 $articles[] = new Article(
     1,
@@ -178,8 +176,8 @@ $articles[] = new Article(
     'published',
     '2024-01-10 09:30:00',
     '2024-01-12 08:00:00',
-    1, 
-    getCategoriesByIds([1, 2, 7], $categories) 
+    getCategoriesByIds([1, 2, 7], $categories), 
+    [] 
 );
 
 $articles[] = new Article(
@@ -189,8 +187,8 @@ $articles[] = new Article(
     'published',
     '2024-01-15 14:45:00',
     '2024-01-17 10:30:00',
-    2, 
-    getCategoriesByIds([3, 9], $categories) 
+    getCategoriesByIds([3, 9], $categories),
+    []
 );
 
 $articles[] = new Article(
@@ -200,8 +198,8 @@ $articles[] = new Article(
     'published',
     '2024-01-05 11:20:00',
     '2024-01-08 09:15:00',
-    1, 
-    getCategoriesByIds([4], $categories) 
+    getCategoriesByIds([4], $categories),
+    []
 );
 
 $articles[] = new Article(
@@ -211,8 +209,8 @@ $articles[] = new Article(
     'draft',
     '2024-01-20 16:10:00',
     '',
-    3, 
-    getCategoriesByIds([1, 7], $categories) 
+    getCategoriesByIds([1, 7], $categories),
+    []
 );
 
 $articles[] = new Article(
@@ -222,8 +220,8 @@ $articles[] = new Article(
     'published',
     '2024-01-18 13:25:00',
     '2024-01-22 11:00:00',
-    4, 
-    getCategoriesByIds([8], $categories) 
+    getCategoriesByIds([8], $categories),
+    []
 );
 
 $articles[] = new Article(
@@ -233,81 +231,83 @@ $articles[] = new Article(
     'review',
     '2024-01-25 10:15:00',
     '', 
-    2, 
-    getCategoriesByIds([2, 3], $categories) 
+    getCategoriesByIds([2, 3], $categories),
+    []
 );
 
+// Initialize Comments
 $comments = [];
 
 $comments[] = new Comment(
     1,
     'Great article! Very informative about AI trends.',
     '2024-01-13 14:30:00',
-    5, 
-    1  
+    5, // authorId
+    1  // articleId
 );
 
 $comments[] = new Comment(
     2,
     'Could you elaborate more on machine learning applications?',
     '2024-01-14 11:45:00',
-    2,
-    1 
+    2, // authorId
+    1  // articleId
 );
 
 $comments[] = new Comment(
     3,
     'Thanks for the healthy eating tips! Very practical advice.',
     '2024-01-18 09:20:00',
-    8, 
-    2 
+    8, // authorId (editor)
+    2  // articleId
 );
 
 $comments[] = new Comment(
     4,
     'As a finance professional, I found the market analysis very accurate.',
     '2024-01-09 13:40:00',
-    6,
-    3  
+    6, // authorId (editor)
+    3  // articleId
 );
 
 $comments[] = new Comment(
     5,
     'Looking forward to the PHP 8.3 article! When will it be published?',
     '2024-01-22 10:30:00',
-    9,
-    4  
+    9, // authorId (editor)
+    4  // articleId
 );
 
 $comments[] = new Comment(
     6,
     'Bali is definitely on my travel list for this year!',
     '2024-01-23 15:25:00',
-    7, 
-    5  
+    7, // authorId (editor)
+    5  // articleId
 );
 
 $comments[] = new Comment(
     7,
     'Sleep science is fascinating. More articles on this topic please!',
     '2024-01-26 12:10:00',
-    5,
-    6  
+    5, // authorId (author)
+    6  // articleId
 );
 
 $comments[] = new Comment(
     8,
     'I\'ve been following these sleep tips and they really work!',
     '2024-01-27 14:50:00',
-    3, 
-    6  
+    3, // authorId (author)
+    6  // articleId
 );
+
 $comments[] = new Comment(
     9,
     'I\'ve been following these sleep tips and they really don\'t work!',
     '2024-02-27 14:50:00',
-    2, 
-    6  
+    2, // authorId (author)
+    6  // articleId
 );
 
 ?>

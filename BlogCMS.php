@@ -50,7 +50,7 @@ class Author extends User {
 
     public function __construct(int $id, string $username, string $email, string $pw, array $articles = []) {
         parent::__construct($id, $username, $email, $pw);
-        $this->articles = $articles;
+        $this->articles[] = $articles;
     }
     
     public function getArticles(): array {
@@ -68,6 +68,19 @@ class Author extends User {
         }
     }
     return null; 
+    }
+
+    public function updateArticle(int $articleId, string $newTitle, string $newContent): bool {
+        $article = $this->findArticle($articleId);
+        if ($article !== null) {
+            $article->setTitle($newTitle);
+            $article->setContent($newContent);
+            echo "Article with ID {$articleId} updated successfully by author '{$this->username}'.\n";
+            return true;
+        }
+        
+        echo "Article with ID {$articleId} not found.\n";
+        return false;
     }
 }
 
@@ -147,6 +160,14 @@ class Article {
     
     public function getComments(): array {
         return $this->comments;
+    }
+
+    public function setTitle(string $title): void {
+        $this->title = $title;
+    }
+
+    public function setContent(string $content): void {
+        $this->content = $content;
     }
 }
 

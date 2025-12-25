@@ -48,12 +48,10 @@ class User {
 // Author Class 
 class Author extends User {
     private array $articles = []; 
-    private array $comments = []; 
 
-    public function __construct(int $id, string $username, string $email, string $pw, array $articles = [], array $comments = []) {
+    public function __construct(int $id, string $username, string $email, string $pw, array $articles = []) {
         parent::__construct($id, $username, $email, $pw);
         $this->articles = $articles;
-        $this->comments = $comments;
     }
     
     public function getArticles(): array {

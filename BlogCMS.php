@@ -204,6 +204,10 @@ class Comment {
     public function getAuthorUsername(): string {
         return $this->author_username;
     }
+
+    public function setContent(string $content): void {
+        $this->content = $content;
+    }
 }
 
 

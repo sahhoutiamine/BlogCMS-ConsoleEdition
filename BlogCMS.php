@@ -194,6 +194,16 @@ class Article {
         return false;
     }
 
+    public function deleteComment(int $commentId): bool {
+        foreach ($this->comments as $index => $comment) {
+            if ($comment->getId() === $commentId) {
+                unset($this->comments[$index]);
+                $this->comments = array_values($this->comments);
+                return true;
+            }
+        }
+        return false;
+    }
     
 
     

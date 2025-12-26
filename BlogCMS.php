@@ -180,30 +180,42 @@ class Article {
 
 
 
+
+    public function findComment(int $commentId): ?Comment {
+        foreach ($this->comments as $comment) {
+            if ($comment->getId() === $commentId) {
+                return $comment;
+            }
+        }
+        return null;
+    }
+
     public function createComment(Comment $comment): void {
         $this->comments[] = $comment;
     }
 
     public function updateComment(int $commentId, string $newContent): bool {
-        foreach ($this->comments as $comment) {
-            if ($comment->getId() === $commentId) {
-                $comment->setContent($newContent);
-                return true;
-            }
+        $comment = $this->findComment($commentId);
+        if ($comment !== null) {
+            $comment->setContent($newContent);
+            return true;
         }
         return false;
     }
 
     public function deleteComment(int $commentId): bool {
-        foreach ($this->comments as $index => $comment) {
-            if ($comment->getId() === $commentId) {
+    $comment = $this->findComment($commentId);
+    if ($comment !== null) {
+        foreach ($this->comments as $index => $commentItem) {
+            if ($commentItem->getId() === $commentId) {
                 unset($this->comments[$index]);
                 $this->comments = array_values($this->comments);
                 return true;
             }
         }
-        return false;
     }
+    return false;
+}
     
 
     
@@ -289,7 +301,5 @@ $users = [
     new Admin(12, 'admin_root', 'root@example.com', 'superadmin123')
 ];
 
-$result = User::login($users, 'john@example.com', 'password123');
-echo "Login result: " . $result . "\n"; 
 
 ?>

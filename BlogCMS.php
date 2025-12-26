@@ -177,6 +177,16 @@ class Article {
     public function setContent(string $content): void {
         $this->content = $content;
     }
+
+
+
+    public function createComment(Comment $comment): void {
+        $this->comments[] = $comment;
+    }
+
+    
+
+    
 }
 
 

@@ -184,6 +184,16 @@ class Article {
         $this->comments[] = $comment;
     }
 
+    public function updateComment(int $commentId, string $newContent): bool {
+        foreach ($this->comments as $comment) {
+            if ($comment->getId() === $commentId) {
+                $comment->setContent($newContent);
+                return true;
+            }
+        }
+        return false;
+    }
+
     
 
     

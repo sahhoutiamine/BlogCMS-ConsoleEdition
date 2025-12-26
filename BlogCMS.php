@@ -50,7 +50,7 @@ class Author extends User {
 
     public function __construct(int $id, string $username, string $email, string $pw, array $articles = []) {
         parent::__construct($id, $username, $email, $pw);
-        $this->articles[] = $articles;
+        $this->articles = $articles;
     }
     
     public function getArticles(): array {
@@ -70,15 +70,25 @@ class Author extends User {
     return null; 
     }
 
-    public function updateArticle(int $articleId, string $newTitle, string $newContent): bool {
-        $article = $this->findArticle($articleId);
-        if ($article !== null) {
+    public function updateArticle(int $articleId, ?string $newTitle = null, ?string $newContent = null): bool {
+    $article = $this->findArticle($articleId);
+    if ($article !== null) {
+        $updated = false;
+        
+        if ($newTitle !== null && trim($newTitle) !== '') {
             $article->setTitle($newTitle);
-            $article->setContent($newContent);
-            return true;
+            $updated = true;
         }
-        return false;
+        
+        if ($newContent !== null && trim($newContent) !== '') {
+            $article->setContent($newContent);
+            $updated = true;
+        }
+        
+        return $updated; 
     }
+    return false;
+}
 
     public function deleteArticle(int $articleId): bool {
     foreach ($this->articles as $index => $article) {

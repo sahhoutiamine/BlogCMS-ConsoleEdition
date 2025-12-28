@@ -1,6 +1,5 @@
 <?php
-// collection.php
-require_once 'BlogCMS.php'; 
+require_once 'BlogCMS.php';
 
 class Collection {
     private $users;
@@ -21,14 +20,12 @@ class Collection {
     }
     
     private function extractAllData() {
-        // Get all articles from authors
         foreach ($this->users as $user) {
             if ($user instanceof Author) {
                 $userArticles = $user->getArticles();
                 foreach ($userArticles as $article) {
                     $this->articles[] = $article;
                     
-                    // Extract comments from each article
                     $articleComments = $article->getComments();
                     foreach ($articleComments as $comment) {
                         $this->comments[] = $comment;
@@ -50,7 +47,6 @@ class Collection {
         return $this->comments;
     }
     
-    // Show all articles with visibility control
     public function showAllArticles($showAll = false, $currentEmail = null) {
         echo "\n=== ALL ARTICLES ===\n";
         echo str_repeat("=", 50) . "\n";
@@ -62,7 +58,6 @@ class Collection {
         
         $visibleArticles = [];
         
-        // Filter articles based on status and user
         foreach ($this->articles as $article) {
             $status = $article->getStatus();
             
@@ -111,11 +106,9 @@ class Collection {
         echo "\nTotal Articles: " . count($visibleArticles) . "\n";
     }
     
-    // Show only articles for a specific author
     public function showAuthorArticles($authorEmail, $showAll = false) {
         $author = null;
         
-        // Find the author
         foreach ($this->users as $user) {
             if ($user->getEmail() == $authorEmail && $user instanceof Author) {
                 $author = $user;
@@ -146,7 +139,6 @@ class Collection {
             if ($showAll || $status == 'published') {
                 $visibleArticles[] = $article;
             } elseif ($status == 'draft') {
-                // Draft articles always visible to their author
                 $visibleArticles[] = $article;
             }
         }
@@ -169,11 +161,9 @@ class Collection {
         return count($visibleArticles);
     }
     
-    // Show all comments by a specific author
     public function showAuthorComments($authorEmail) {
         $author = null;
         
-        // Find the author
         foreach ($this->users as $user) {
             if ($user->getEmail() == $authorEmail) {
                 $author = $user;
@@ -189,7 +179,6 @@ class Collection {
         $authorUsername = $author->getUsername();
         $authorComments = [];
         
-        // Find all comments by this author
         foreach ($this->comments as $comment) {
             if ($comment->getAuthorUsername() == $authorUsername) {
                 $authorComments[] = $comment;
@@ -216,7 +205,6 @@ class Collection {
         return count($authorComments);
     }
     
-    // Show all comments in the system
     public function showAllComments() {
         echo "\n=== ALL COMMENTS ===\n";
         echo str_repeat("=", 50) . "\n";
@@ -239,9 +227,7 @@ class Collection {
         return count($this->comments);
     }
     
-    // Delete any comment (for admin/editor)
     public function deleteAnyComment($commentId) {
-        // Find the comment
         $commentIndex = null;
         $comment = null;
         
@@ -258,7 +244,6 @@ class Collection {
             return false;
         }
         
-        // Remove from article's comments
         foreach ($this->articles as $article) {
             $articleComments = $article->getComments();
             foreach ($articleComments as $cIndex => $articleComment) {
@@ -269,7 +254,6 @@ class Collection {
             }
         }
         
-        // Remove from collection's comments array
         unset($this->comments[$commentIndex]);
         $this->comments = array_values($this->comments);
         
@@ -278,7 +262,6 @@ class Collection {
     }
     
     public function showArticleDetails($articleId, $commentAsAuthor = false, $authorEmail = null) {
-        // Find the article
         $article = null;
         foreach ($this->articles as $art) {
             if ($art->getId() == $articleId) {
@@ -292,14 +275,12 @@ class Collection {
             return;
         }
         
-        // Check article visibility
         $status = $article->getStatus();
         $canView = false;
         
         if ($status == 'published') {
             $canView = true;
         } elseif ($status == 'draft' && $authorEmail) {
-            // Check if user can view draft
             $author = $this->getAuthorByArticleId($articleId);
             $user = $this->getUserByEmail($authorEmail);
             
@@ -330,7 +311,6 @@ class Collection {
         
         echo "Author: " . $this->getAuthorName($article->getId()) . "\n";
         
-        // Show categories
         $categories = $article->getCategories();
         if (!empty($categories)) {
             echo "Categories: ";
@@ -341,7 +321,6 @@ class Collection {
             echo implode(", ", $categoryNames) . "\n";
         }
         
-        // Show comments
         $comments = $article->getComments();
         echo "\n=== COMMENTS (" . count($comments) . ") ===\n";
         
@@ -358,7 +337,6 @@ class Collection {
             echo str_repeat("-", 30) . "\n";
         }
         
-        // Ask if they want to add a comment (only for published articles)
         if ($status == 'published') {
             if ($commentAsAuthor && $authorEmail) {
                 echo "\n=== ADD COMMENT ===\n";
@@ -391,18 +369,14 @@ class Collection {
             return;
         }
         
-        // Create new comment with ID = next available ID
         $newCommentId = $this->getNextCommentId();
         $currentDate = date('Y-m-d H:i:s');
         $authorUsername = "guest";
         
-        // Create the comment object
         $newComment = new Comment($newCommentId, $commentContent, $currentDate, $authorUsername);
         
-        // Add comment to article
         $article->createComment($newComment);
         
-        // Also add to our collection's comments array
         $this->comments[] = $newComment;
         
         echo "\nComment added successfully!\n";
@@ -421,7 +395,6 @@ class Collection {
             return;
         }
         
-        // Find author username
         $authorUsername = "";
         foreach ($this->users as $user) {
             if ($user->getEmail() == $authorEmail) {
@@ -434,17 +407,13 @@ class Collection {
             $authorUsername = "guest";
         }
         
-        // Create new comment with ID = next available ID
         $newCommentId = $this->getNextCommentId();
         $currentDate = date('Y-m-d H:i:s');
         
-        // Create the comment object with author's username
         $newComment = new Comment($newCommentId, $commentContent, $currentDate, $authorUsername);
         
-        // Add comment to article
         $article->createComment($newComment);
         
-        // Also add to our collection's comments array
         $this->comments[] = $newComment;
         
         echo "\nComment added successfully!\n";
@@ -454,9 +423,7 @@ class Collection {
         echo "Content: " . $commentContent . "\n";
     }
     
-    // Update author's comment
     public function updateAuthorComment($commentId, $authorEmail, $newContent) {
-        // Find the author
         $author = null;
         foreach ($this->users as $user) {
             if ($user->getEmail() == $authorEmail) {
@@ -471,10 +438,8 @@ class Collection {
         
         $authorUsername = $author->getUsername();
         
-        // Find the comment and check if author owns it
         foreach ($this->comments as $comment) {
             if ($comment->getId() == $commentId && $comment->getAuthorUsername() == $authorUsername) {
-                // Update the comment
                 $comment->setContent($newContent);
                 return true;
             }
@@ -483,9 +448,7 @@ class Collection {
         return false;
     }
     
-    // Delete author's comment
     public function deleteAuthorComment($commentId, $authorEmail) {
-        // Find the author
         $author = null;
         foreach ($this->users as $user) {
             if ($user->getEmail() == $authorEmail) {
@@ -500,10 +463,8 @@ class Collection {
         
         $authorUsername = $author->getUsername();
         
-        // Find the comment and check if author owns it
         foreach ($this->comments as $index => $comment) {
             if ($comment->getId() == $commentId && $comment->getAuthorUsername() == $authorUsername) {
-                // Also remove from article's comments
                 foreach ($this->articles as $article) {
                     $articleComments = $article->getComments();
                     foreach ($articleComments as $cIndex => $articleComment) {
@@ -514,7 +475,6 @@ class Collection {
                     }
                 }
                 
-                // Remove from collection's comments array
                 unset($this->comments[$index]);
                 $this->comments = array_values($this->comments);
                 return true;
@@ -524,9 +484,7 @@ class Collection {
         return false;
     }
     
-    // Update article status
     public function updateArticleStatus($articleId, $newStatus, $authorEmail = null) {
-        // Find the article
         $article = null;
         foreach ($this->articles as $art) {
             if ($art->getId() == $articleId) {
@@ -540,7 +498,6 @@ class Collection {
             return false;
         }
         
-        // Check if author is trying to update someone else's article
         if ($authorEmail !== null) {
             if (!$this->isArticleOwner($articleId, $authorEmail)) {
                 echo "You can only update the status of your own articles!\n";
@@ -548,14 +505,12 @@ class Collection {
             }
         }
         
-        // Validate status - only draft or published
         $validStatuses = ['draft', 'published'];
         if (!in_array(strtolower($newStatus), $validStatuses)) {
             echo "Invalid status! Please use: draft or published.\n";
             return false;
         }
         
-        // Update the status
         $article->setStatus(strtolower($newStatus));
         
         return true;
@@ -620,7 +575,6 @@ class Collection {
         return "Unknown Article";
     }
     
-    // Find author by article ID
     private function findAuthorByArticleId($articleId) {
         foreach ($this->users as $user) {
             if ($user instanceof Author) {
@@ -635,11 +589,9 @@ class Collection {
         return null;
     }
     
-    // Check if article belongs to specific author
     public function isArticleOwner($articleId, $authorEmail) {
         $author = null;
         
-        // Find the author
         foreach ($this->users as $user) {
             if ($user->getEmail() == $authorEmail && $user instanceof Author) {
                 $author = $user;
@@ -651,7 +603,6 @@ class Collection {
             return false;
         }
         
-        // Check if author owns this article
         $authorArticles = $author->getArticles();
         foreach ($authorArticles as $article) {
             if ($article->getId() == $articleId) {
@@ -662,9 +613,7 @@ class Collection {
         return false;
     }
     
-    // Author creates their own article
     public function createAuthorArticle($authorEmail, $title, $content, $status) {
-        // Find the author
         $author = null;
         foreach ($this->users as $user) {
             if ($user->getEmail() == $authorEmail && $user instanceof Author) {
@@ -678,36 +627,29 @@ class Collection {
             return false;
         }
         
-        // Validate status - only draft or published
         $validStatuses = ['draft', 'published'];
         if (!in_array(strtolower($status), $validStatuses)) {
             echo "Invalid status! Please use: draft or published.\n";
             return false;
         }
         
-        // Create new article
         $articleId = $this->getNextArticleId();
         $currentDate = date('Y-m-d H:i:s');
         $newArticle = new Article($articleId, $title, $content, strtolower($status), $currentDate);
         
-        // Add article to author
         $author->createArticle($newArticle);
         
-        // Also add to collection's articles array
         $this->articles[] = $newArticle;
         
         return $articleId;
     }
     
-    // Author updates their own article
     public function updateAuthorArticle($articleId, $authorEmail, $newTitle = null, $newContent = null) {
-        // First check if author owns this article
         if (!$this->isArticleOwner($articleId, $authorEmail)) {
             echo "You can only update your own articles!\n";
             return false;
         }
         
-        // Find the author
         $author = null;
         foreach ($this->users as $user) {
             if ($user->getEmail() == $authorEmail && $user instanceof Author) {
@@ -720,19 +662,15 @@ class Collection {
             return false;
         }
         
-        // Update the article
         return $author->updateArticle($articleId, $newTitle, $newContent);
     }
     
-    // Author deletes their own article
     public function deleteAuthorArticle($articleId, $authorEmail) {
-        // First check if author owns this article
         if (!$this->isArticleOwner($articleId, $authorEmail)) {
             echo "You can only delete your own articles!\n";
             return false;
         }
         
-        // Find the author
         $author = null;
         foreach ($this->users as $user) {
             if ($user->getEmail() == $authorEmail && $user instanceof Author) {
@@ -745,10 +683,8 @@ class Collection {
             return false;
         }
         
-        // Delete the article
         $result = $author->deleteArticle($articleId);
         
-        // Also remove from collection's articles array
         if ($result) {
             foreach ($this->articles as $index => $article) {
                 if ($article->getId() == $articleId) {
@@ -762,7 +698,6 @@ class Collection {
         return $result;
     }
     
-    // ADMIN FUNCTIONS
     public function showAllUsers($excludeCurrentUser = false) {
         echo "\n=== ALL USERS ===\n";
         echo str_repeat("=", 50) . "\n";
@@ -773,7 +708,6 @@ class Collection {
         $totalShown = 0;
         
         foreach ($this->users as $user) {
-            // Skip current user if excludeCurrentUser is true
             if ($excludeCurrentUser && $this->currentUserEmail && $user->getEmail() == $this->currentUserEmail) {
                 continue;
             }
@@ -836,10 +770,8 @@ class Collection {
     }
     
     public function addUser($userType, $username, $email, $password) {
-        // Find the next available user ID
         $nextId = $this->getNextUserId();
         
-        // Create the user based on type
         switch (strtolower($userType)) {
             case 'admin':
                 $newUser = new Admin($nextId, $username, $email, $password);
@@ -855,7 +787,6 @@ class Collection {
                 return false;
         }
         
-        // Add user to array
         $this->users[] = $newUser;
         return true;
     }
@@ -863,13 +794,11 @@ class Collection {
     public function deleteUser($userId) {
         foreach ($this->users as $index => $user) {
             if ($user->getId() == $userId) {
-                // Check if trying to delete current user
                 if ($this->currentUserEmail && $user->getEmail() == $this->currentUserEmail) {
                     echo "You cannot delete yourself!\n";
                     return false;
                 }
                 
-                // Don't allow deleting all admins (keep at least one)
                 if ($user instanceof Admin) {
                     $adminCount = 0;
                     foreach ($this->users as $u) {
@@ -892,9 +821,7 @@ class Collection {
         return false;
     }
     
-    // ARTICLE MANAGEMENT FUNCTIONS (for Admin and Editor)
     public function createArticleForAuthor($authorId, $article) {
-        // Find the author
         $author = null;
         foreach ($this->users as $user) {
             if ($user->getId() == $authorId && $user instanceof Author) {
@@ -908,18 +835,14 @@ class Collection {
             return false;
         }
         
-        // Add article to author
         $author->createArticle($article);
         
-        // Also add to collection's articles array
         $this->articles[] = $article;
         
         return true;
     }
     
-    // Updated: Only needs article ID, not author ID
     public function updateArticle($articleId, $newTitle = null, $newContent = null) {
-        // Find the article's author
         $author = $this->findAuthorByArticleId($articleId);
         
         if ($author === null) {
@@ -927,13 +850,10 @@ class Collection {
             return false;
         }
         
-        // Update the article using Author's updateArticle method
         return $author->updateArticle($articleId, $newTitle, $newContent);
     }
     
-    // Updated: Only needs article ID, not author ID
     public function deleteArticle($articleId) {
-        // Find the article's author
         $author = $this->findAuthorByArticleId($articleId);
         
         if ($author === null) {
@@ -941,10 +861,8 @@ class Collection {
             return false;
         }
         
-        // Delete the article using Author's deleteArticle method
         $result = $author->deleteArticle($articleId);
         
-        // Also remove from collection's articles array
         if ($result) {
             foreach ($this->articles as $index => $article) {
                 if ($article->getId() == $articleId) {
@@ -978,13 +896,11 @@ class Collection {
         return $maxId + 1;
     }
     
-    // Use the User::login() static method from BlogCMS
     public function loginUser($email, $password) {
         return User::login($this->users, $email, $password);
     }
 }
 
-// Admin Dashboard Function
 function showAdminDashboard($collection, $currentEmail) {
     while (true) {
         echo "\n=== ADMIN DASHBOARD ===\n";
@@ -1004,12 +920,12 @@ function showAdminDashboard($collection, $currentEmail) {
         $choice = trim(fgets(STDIN));
         
         if ($choice == '1') {
-            $collection->showAllArticles(true, $currentEmail); // Show all articles including drafts
+            $collection->showAllArticles(true, $currentEmail);
             echo "\nPress Enter to continue...";
             fgets(STDIN);
         } 
         elseif ($choice == '2') {
-            $collection->showAllUsers(false); // Show all users including current
+            $collection->showAllUsers(false);
             echo "\nPress Enter to continue...";
             fgets(STDIN);
         } 
@@ -1044,7 +960,7 @@ function showAdminDashboard($collection, $currentEmail) {
         } 
         elseif ($choice == '5') {
             echo "\n=== DELETE USER ===\n";
-            $collection->showAllUsers(true); // Exclude current user
+            $collection->showAllUsers(true);
             
             echo "\nEnter User ID to delete: ";
             $userId = trim(fgets(STDIN));
@@ -1064,7 +980,7 @@ function showAdminDashboard($collection, $currentEmail) {
         } 
         elseif ($choice == '6') {
             echo "\n=== CREATE ARTICLE FOR AUTHOR ===\n";
-            $collection->showAllAuthors(); // Show only authors
+            $collection->showAllAuthors();
             
             echo "\nEnter Author ID: ";
             $authorId = trim(fgets(STDIN));
@@ -1082,7 +998,6 @@ function showAdminDashboard($collection, $currentEmail) {
                 $articleId = $collection->getNextArticleId();
                 $currentDate = date('Y-m-d H:i:s');
                 
-                // Create new article
                 $newArticle = new Article($articleId, $title, $content, $status, $currentDate);
                 
                 if ($collection->createArticleForAuthor((int)$authorId, $newArticle)) {
@@ -1172,7 +1087,6 @@ function showAdminDashboard($collection, $currentEmail) {
             fgets(STDIN);
         } 
         elseif ($choice == '10') {
-            // Manage Comments
             echo "\n=== MANAGE COMMENTS ===\n";
             $commentCount = $collection->showAllComments();
             
@@ -1217,7 +1131,6 @@ function showAdminDashboard($collection, $currentEmail) {
     }
 }
 
-// Editor Dashboard Function
 function showEditorDashboard($collection, $currentEmail) {
     while (true) {
         echo "\n=== EDITOR DASHBOARD ===\n";
@@ -1234,13 +1147,13 @@ function showEditorDashboard($collection, $currentEmail) {
         $choice = trim(fgets(STDIN));
         
         if ($choice == '1') {
-            $collection->showAllArticles(true, $currentEmail); // Show all articles including drafts
+            $collection->showAllArticles(true, $currentEmail);
             echo "\nPress Enter to continue...";
             fgets(STDIN);
         } 
         elseif ($choice == '2') {
             echo "\n=== CREATE ARTICLE FOR AUTHOR ===\n";
-            $collection->showAllAuthors(); // Show only authors
+            $collection->showAllAuthors();
             
             echo "\nEnter Author ID: ";
             $authorId = trim(fgets(STDIN));
@@ -1258,7 +1171,6 @@ function showEditorDashboard($collection, $currentEmail) {
                 $articleId = $collection->getNextArticleId();
                 $currentDate = date('Y-m-d H:i:s');
                 
-                // Create new article
                 $newArticle = new Article($articleId, $title, $content, $status, $currentDate);
                 
                 if ($collection->createArticleForAuthor((int)$authorId, $newArticle)) {
@@ -1353,7 +1265,6 @@ function showEditorDashboard($collection, $currentEmail) {
             fgets(STDIN);
         } 
         elseif ($choice == '7') {
-            // Manage Comments
             echo "\n=== MANAGE COMMENTS ===\n";
             $commentCount = $collection->showAllComments();
             
@@ -1398,10 +1309,8 @@ function showEditorDashboard($collection, $currentEmail) {
     }
 }
 
-// Author Dashboard Function
 function showAuthorDashboard($collection, $currentEmail) {
     while (true) {
-        // Show article count first
         $articleCount = $collection->showAuthorArticles($currentEmail, true);
         
         echo "\n=== AUTHOR DASHBOARD ===\n";
@@ -1418,7 +1327,6 @@ function showAuthorDashboard($collection, $currentEmail) {
         $choice = trim(fgets(STDIN));
         
         if ($choice == '1') {
-            // Article menu (same as visitor but with draft visibility for own articles)
             while (true) {
                 $collection->showAllArticles(false, $currentEmail);
                 
@@ -1562,7 +1470,6 @@ function showAuthorDashboard($collection, $currentEmail) {
             fgets(STDIN);
         } 
         elseif ($choice == '6') {
-            // Manage Comments
             echo "\n=== MANAGE MY COMMENTS ===\n";
             $commentCount = $collection->showAuthorComments($currentEmail);
             
@@ -1625,7 +1532,6 @@ function showAuthorDashboard($collection, $currentEmail) {
     }
 }
 
-// Simple Menu System
 echo "=== BLOG CMS SYSTEM ===\n";
 echo "Loading data...\n";
 
@@ -1636,7 +1542,6 @@ echo "Users: " . count($collection->getAllUsers()) . "\n";
 echo "Articles: " . count($collection->getAllArticles()) . "\n";
 echo "Comments: " . count($collection->getAllComments()) . "\n";
 
-// Main menu loop
 while (true) {
     echo "\n=== MAIN MENU ===\n";
     echo "1. Get All Articles\n";
@@ -1647,9 +1552,8 @@ while (true) {
     $choice = trim(fgets(STDIN));
     
     if ($choice == '1') {
-        // Article menu for visitors - only published articles
         while (true) {
-            $collection->showAllArticles(false, null); // Only published articles for visitors
+            $collection->showAllArticles(false, null);
             
             echo "\n=== ARTICLE OPTIONS ===\n";
             echo "1. View Article Details\n";
@@ -1680,7 +1584,6 @@ while (true) {
         }
     } 
     elseif ($choice == '2') {
-        // Login using User::login() static method
         echo "\n=== LOGIN ===\n";
         echo "Email: ";
         $email = trim(fgets(STDIN));
@@ -1693,10 +1596,8 @@ while (true) {
         if ($loginResult != "invalid") {
             echo "\nLogin successful! Welcome $loginResult!\n";
             
-            // Set current user email in collection
             $collection->setCurrentUserEmail($email);
             
-            // Show appropriate dashboard based on user type
             if ($loginResult == 'admin') {
                 showAdminDashboard($collection, $email);
             } 

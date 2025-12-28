@@ -172,6 +172,22 @@ class Article {
         return $this->title;
     }
     
+    public function getContent(): string {
+        return $this->content;
+    }
+    
+    public function getStatus(): string {
+        return $this->status;
+    }
+    
+    public function getCreatedAt(): string {
+        return $this->createdAt;
+    }
+    
+    public function getPublishedAt(): string {
+        return $this->publishedAt;
+    }
+    
     public function getCategories(): array {
         return $this->categories;
     }
@@ -188,8 +204,9 @@ class Article {
         $this->content = $content;
     }
 
-
-
+    public function setStatus(string $status): void {
+        $this->status = $status;
+    }
 
     public function findComment(int $commentId): ?Comment {
         foreach ($this->comments as $comment) {
@@ -255,6 +272,10 @@ class Comment {
     
     public function getAuthorUsername(): string {
         return $this->author_username;
+    }
+    
+    public function getCreatedAt(): string {
+        return $this->createdAt;
     }
 
     public function setContent(string $content): void {

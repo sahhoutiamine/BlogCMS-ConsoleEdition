@@ -1,43 +1,120 @@
 BlogCMS Console Edition
-📌 What's Implemented
-✅ Core Classes
-User Classes - 5 user types with inheritance:
+A simple PHP-based Content Management System (CMS) with a console interface for managing a blog platform.
 
-User (base class)
+Features
+User Roles & Permissions
+Visitors: View published articles and add comments as "guest"
 
-Author (article writers)
+Authors: Create, update, and delete their own articles; manage their comments
 
-Moderator (base for editors/admins)
+Editors: Manage any article; create articles for authors; manage all comments
 
-Editor (content editors)
+Admins: Full system control - manage users, articles, comments, and everything else
 
-Admin (full access)
+Article Management
+Create articles with draft or published status
 
-Content Classes:
+Update article content and status
 
-Category - Content topics
+Delete articles (authors can only delete their own)
 
-Article - Blog posts with status (draft/published/review)
+Draft articles: visible only to author, admin, and editor
 
-Comment - User comments on articles
+Published articles: visible to everyone
 
-✅ Sample Data
-12 users: 5 authors, 4 editors, 3 admins
+Comment System
+Visitors can comment as "guest"
 
-9 categories: Tech, Science, Health, Business, etc.
+Logged-in users comment with their username
 
-6 articles: Various statuses and topics
+Authors can update/delete their own comments
 
-9 comments: Linked to articles and authors
+Editors/Admins can manage all comments
 
-✅ Main Features
-User authentication via login() method
+User Management (Admin only)
+Add new users (Author, Editor, Admin)
 
-Content categorization system
+Delete users (can't delete yourself or last admin)
 
-Article-comment relationships
+View all users with statistics
 
-Role-based user hierarchy
+Project Structure
+Main Files:
+BlogCMS.php - Core classes (User, Author, Editor, Admin, Article, Comment, Category)
 
-🔧 Current Status
-Basic OOP structure with sample data ready for testing. All classes are defined and instantiated with realistic examples.
+collection.php - Main application with Collection class and menu system
+
+Classes:
+User: Base user class with login functionality
+
+Author: Can create and manage articles/comments
+
+Editor: Can manage any article and comments
+
+Admin: Full system administration
+
+Article: Blog articles with status management
+
+Comment: Article comments
+
+Category: Article categories
+
+Collection: Main application logic and data management
+
+How to Run
+Make sure you have PHP installed
+
+Place both BlogCMS.php and collection.php in the same directory
+
+Run from command line:
+
+bash
+php collection.php
+Usage Flow
+Main Menu: Choose between viewing articles or logging in
+
+Visitor Mode: View published articles and add comments
+
+Login: Use credentials from the BlogCMS.php file
+
+Dashboard: Access role-specific features
+
+Article Viewing: All users can view articles based on permissions
+
+Management: Each role has specific management capabilities
+
+Sample User Credentials
+Check BlogCMS.php for sample users:
+
+Authors: john@example.com (password123), jane@example.com (secure456)
+
+Editors: mike@example.com (editpass123), sarah@example.com (editpass456)
+
+Admins: alex@example.com (adminpass123), lisa@example.com (adminpass456)
+
+Key Features
+Simple console interface with clear menus
+
+Role-based access control
+
+Article status management (draft/published)
+
+Comment system with user attribution
+
+Data persistence within session
+
+Input validation and error handling
+
+Clean separation of concerns
+
+Technologies Used
+PHP 7.4+ (Object-Oriented Programming)
+
+Console input/output (STDIN/STDOUT)
+
+No database required (in-memory data storage)
+
+Simple and clean code structure
+
+Note
+This is a console application for educational purposes. Data is stored in memory and will be lost when the program ends.
